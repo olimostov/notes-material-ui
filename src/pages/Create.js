@@ -9,6 +9,8 @@ import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
 import FormControl from '@material-ui/core/FormControl';
 import FormLabel from '@material-ui/core/FormLabel';
+import { useHistory } from 'react-router';
+require('dotenv').config();
 
 const useStyles = makeStyles({
   field: {
@@ -17,8 +19,10 @@ const useStyles = makeStyles({
     display: 'block'
   }
 });
+const url = process.env.JSON_SERVER_URL;
 export default function Create() {
   const classes = useStyles();
+  const history = useHistory();
 
   const [title, setTitle] = useState('');
   const [details, setDetails] = useState('');
@@ -39,9 +43,15 @@ export default function Create() {
       setDetailsError(true);
     }
     if (title && details) {
-      console.log('title, details :>> ', title, details, category);
-      // setTitle('');
-      // setDetails('');
+      fetch('http://localhost:8000/notes', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ title, details, category })
+      }).then(() => {
+        history.push('/');
+      });
     }
   };
 
